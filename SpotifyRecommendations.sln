@@ -6,6 +6,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{27F08B91-6F0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B4E2D03D-61D1-4139-A5D5-2B7044A9555C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyRecommendations.Application", "src\SpotifyRecommendations.Application\SpotifyRecommendations.Application.csproj", "{10F52E92-31A2-413D-AAE0-BE480008DBE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyRecommendations.Infrastructure", "src\SpotifyRecommendations.Infrastructure\SpotifyRecommendations.Infrastructure.csproj", "{26C7F711-B4C1-4731-B521-275A0C1F1564}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,8 +20,18 @@ Global
 		{7117BCB9-89CA-4E33-969C-4FBE223E5530}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7117BCB9-89CA-4E33-969C-4FBE223E5530}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7117BCB9-89CA-4E33-969C-4FBE223E5530}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10F52E92-31A2-413D-AAE0-BE480008DBE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10F52E92-31A2-413D-AAE0-BE480008DBE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10F52E92-31A2-413D-AAE0-BE480008DBE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10F52E92-31A2-413D-AAE0-BE480008DBE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26C7F711-B4C1-4731-B521-275A0C1F1564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26C7F711-B4C1-4731-B521-275A0C1F1564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26C7F711-B4C1-4731-B521-275A0C1F1564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26C7F711-B4C1-4731-B521-275A0C1F1564}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7117BCB9-89CA-4E33-969C-4FBE223E5530} = {27F08B91-6F08-4DA2-AD81-3C1096D27BB2}
+		{10F52E92-31A2-413D-AAE0-BE480008DBE3} = {27F08B91-6F08-4DA2-AD81-3C1096D27BB2}
+		{26C7F711-B4C1-4731-B521-275A0C1F1564} = {27F08B91-6F08-4DA2-AD81-3C1096D27BB2}
 	EndGlobalSection
 EndGlobal
