@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SpotifyRecommendations.Application.Spotify.Interfaces;
 using SpotifyRecommendations.Application.Spotify.Models;
 using SpotifyRecommendations.Application.Spotify.Queries.GetGenresQuery;
+using SpotifyRecommendations.Application.Spotify.Queries.GetRecommendationsQuery;
 using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery;
 using SpotifyRecommendations.Infrastructure.Spotify.Helpers;
 using SpotifyRecommendations.Models;
@@ -66,14 +67,17 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> GetRecommendations([FromForm] SearchQuery query)
+    public async Task<IActionResult> GetRecommendations()
     {
-        var response = await _mediator.Send(query);
+        var userPreferenceTracks = _userPreferenceService.GetTracks();
+        var response = await _mediator.Send(new GetRecommendationsQuery
+        {
+            TrackIds = userPreferenceTracks.Select(x => x.Id)
+        });
 
         var viewModel = new GetRecommendationsViewModel
         {
-            RecommendedTracks = response.Tracks,
-            SearchQuery = query
+            RecommendedTracks = response.Tracks.ToList(),
         };
         
         return View(viewModel);

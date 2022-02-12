@@ -12,5 +12,6 @@ public class SpotifyOptions
         public string? RequestAuthorization { get; set; } = null;
         public string? SearchRequest { get; set; } = null;
         public string? GetGenres { get; set; } = null;
+        public string? GetRecommendations { get; set; } = null;
     }
 }

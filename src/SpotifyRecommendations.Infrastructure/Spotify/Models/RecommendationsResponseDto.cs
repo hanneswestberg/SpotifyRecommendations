@@ -2,9 +2,8 @@
 
 namespace SpotifyRecommendations.Infrastructure.Spotify.Models;
 
-public class SearchResponseDto
+public class RecommendationsResponseDto
 {
     [JsonPropertyName("tracks")]
-    public TrackListDto? Tracks { get; set; }
+    public IEnumerable<TrackDto>? Tracks { get; set; }
 }
-

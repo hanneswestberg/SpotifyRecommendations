@@ -3,6 +3,7 @@ using SpotifyRecommendations.Application.Spotify.Interfaces;
 using SpotifyRecommendations.Application.Spotify.Models;
 using SpotifyRecommendations.Application.Spotify.Options;
 using SpotifyRecommendations.Application.Spotify.Queries.GetGenresQuery;
+using SpotifyRecommendations.Application.Spotify.Queries.GetRecommendationsQuery;
 using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery;
 using SpotifyRecommendations.Infrastructure.Spotify.Helpers;
 using SpotifyRecommendations.Infrastructure.Spotify.Models;
@@ -33,6 +34,30 @@ public class SpotifyService : ISpotifyService
         return response;
     }
 
+    public async Task<RecommendationsResponse> GetRecommendations(GetRecommendationsQuery getRecommendationsQuery, CancellationToken cancellationToken = default)
+    {
+        var responseDto = await _spotifyRepository.Get<RecommendationsResponseDto>(
+            $"{_options.Value.Endpoints!.GetRecommendations}?market=sv&seed_tracks={string.Join(",", getRecommendationsQuery.TrackIds)}", cancellationToken);
+
+        var response = new RecommendationsResponse();
+        if (responseDto?.Tracks is not { })
+            return response;
+        
+        // Todo: Move mapping of objects to a mapper
+        foreach (var track in responseDto.Tracks)
+        {
+            response.Tracks.Add(new Track
+            {
+                Name = track.Name,
+                Id = track.Id,
+                Album = track.Album!.Name,
+                Artist = string.Join(", ", track.Artists.Select(artist => artist!.Name))
+            });
+        }
+        
+        return response;
+    }
+
     public async Task<SearchResult> Search(SearchQuery searchQuery, CancellationToken cancellationToken = default)
     {
         var searchQueryString = SearchQueryBuilder.Build(searchQuery);
@@ -52,7 +77,11 @@ public class SpotifyService : ISpotifyService
                 Name = track!.Name,
                 Id = track.Id,
                 Album = track.Album!.Name,
-                Artist = string.Join(", ", track.Artists.Select(artist => artist!.Name))
+                Artist = string.Join(", ", track.Artists.Select(artist => artist!.Name)),
+                ImageUrl = track.Album?.Images?
+                    .OrderByDescending(x => x.Height)
+                    .FirstOrDefault()
+                    .Url ?? null
             });
         }
 
