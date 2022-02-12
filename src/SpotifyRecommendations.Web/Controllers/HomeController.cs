@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SpotifyRecommendations.Application.Spotify.Queries.GetGenresQuery;
 using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery;
 using SpotifyRecommendations.Models;
 
@@ -17,9 +18,16 @@ public class HomeController : Controller
         _mediator = mediator;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var response = await _mediator.Send(new GetGenresQuery());
+
+        var viewModel = new HomeViewModel
+        {
+            Genres = response.Genres
+        };
+        
+        return View(viewModel);
     }
 
     [HttpPost]

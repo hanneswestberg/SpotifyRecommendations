@@ -1,4 +1,5 @@
 ﻿@using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery
+@model HomeViewModel
 @{
     ViewData["Title"] = "Spotify Recommendations";
     
@@ -6,7 +7,7 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Spotify Recommendations</h1>
+    <h1 class="display-4" style="margin-bottom: 50px">Spotify Recommendations</h1>
     
     <form asp-controller="Home" asp-action="GetRecommendations" method="post" class="row top-50">
         <div class="col-3">
@@ -14,7 +15,14 @@
             Album: <input asp-for="@query.Album" class="form-control"/>
             From (Year): <input asp-for="@query.YearStart" class="form-control"/>
             To (Year): <input asp-for="@query.YearEnd" class="form-control"/>
-            Genre: <input asp-for="@query.Genre" class="form-control"/>
+            Genre: <input asp-for="@query.Genre" list="genresList" placeholder="Type here..." class="form-control"/>
+            <datalist id="genresList">
+                @foreach (var genre in Model.Genres)
+                {
+                    <option value="@genre"/>
+                }
+            </datalist>
+            
             
             Must be new: <input asp-for="@query.TagNew" type="checkbox" class="form-check-input"/>
             Must be hipster: <input asp-for="@query.TagHipster" type="checkbox" class="form-check-input"/>

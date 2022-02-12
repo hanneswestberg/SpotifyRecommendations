@@ -2,6 +2,7 @@
 using SpotifyRecommendations.Application.Spotify.Interfaces;
 using SpotifyRecommendations.Application.Spotify.Models;
 using SpotifyRecommendations.Application.Spotify.Options;
+using SpotifyRecommendations.Application.Spotify.Queries.GetGenresQuery;
 using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery;
 using SpotifyRecommendations.Infrastructure.Spotify.Helpers;
 using SpotifyRecommendations.Infrastructure.Spotify.Models;
@@ -17,6 +18,19 @@ public class SpotifyService : ISpotifyService
     {
         _spotifyRepository = spotifyRepository;
         _options = options;
+    }
+
+    public async Task<GenresResponse> GetGenres(CancellationToken cancellationToken = default)
+    {
+        var responseDto = await _spotifyRepository.Get<GenresResponseDto>($"{_options.Value.Endpoints!.GetGenres}", cancellationToken);
+
+        var response = new GenresResponse();
+        if (responseDto?.Genres is not { })
+            return response;
+
+        response.Genres = responseDto.Genres.ToList();
+
+        return response;
     }
 
     public async Task<SearchResult> Search(SearchQuery searchQuery, CancellationToken cancellationToken = default)
