@@ -1,8 +1,27 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery
+@{
+    ViewData["Title"] = "Spotify Recommendations";
+    
+    var query = new SearchQuery();
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Spotify Recommendations</h1>
+    
+    <form asp-controller="Home" asp-action="GetRecommendations" method="post" class="row top-50">
+        <div class="col-3">
+            Artist: <input asp-for="@query.Artist" class="form-control"/>
+            Album: <input asp-for="@query.Album" class="form-control"/>
+            From (Year): <input asp-for="@query.YearStart" class="form-control"/>
+            To (Year): <input asp-for="@query.YearEnd" class="form-control"/>
+            Genre: <input asp-for="@query.Genre" class="form-control"/>
+            
+            Must be new: <input asp-for="@query.TagNew" type="checkbox" class="form-check-input"/>
+            Must be hipster: <input asp-for="@query.TagHipster" type="checkbox" class="form-check-input"/>
+        </div>
+        <div class="align-content-center">
+            <button type="submit" class="btn btn-success m-2">Get recommendations</button>
+        </div>
+    </form>
 </div>
+

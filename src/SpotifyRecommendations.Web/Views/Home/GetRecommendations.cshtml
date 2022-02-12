@@ -1,0 +1,20 @@
+﻿@model GetRecommendationsViewModel
+@{
+    ViewData["Title"] = "Spotify Recommendations";
+}
+
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Refine search</a>
+</li>
+
+<div class="text-center">
+    <h1 class="display-4">Spotify Recommendations</h1>
+
+    @foreach (var track in Model.RecommendedTracks)
+    {
+        <div class="m-2">
+                <p>@track.Name</p>
+                <p>@track.Id</p>
+        </div>
+    }
+</div>
