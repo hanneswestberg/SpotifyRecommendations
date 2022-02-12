@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using SpotifyRecommendations.Application.Spotify.Interfaces;
+using SpotifyRecommendations.Application.Spotify.Models;
 using SpotifyRecommendations.Application.Spotify.Options;
 using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery;
 using SpotifyRecommendations.Infrastructure.Spotify.Helpers;
@@ -21,12 +22,30 @@ public class SpotifyService : ISpotifyService
     public async Task<SearchResult> Search(SearchQuery searchQuery, CancellationToken cancellationToken = default)
     {
         var searchQueryString = SearchQueryBuilder.Build(searchQuery);
-        var response = await _spotifyRepository
-            .Get<SearchResultDto>($"{_options.Value.Endpoints!.SearchRequest}?type=track&market=SV&include_external=audio&q={searchQueryString}&limit={searchQuery.Limit}&offset={searchQuery.Offset}", 
+        var responseDto = await _spotifyRepository
+            .Get<SearchResponseDto>($"{_options.Value.Endpoints!.SearchRequest}?type=track&market=SV&include_external=audio&q={searchQueryString}&limit={searchQuery.Limit}&offset={searchQuery.Offset}", 
                 cancellationToken);
-        
-        
 
-        return new SearchResult();
+        var response = new SearchResult();
+        if (responseDto?.Tracks?.Items is null)
+            return response;
+        
+        // Todo: Move mapping of objects to a mapper
+        foreach (var track in responseDto.Tracks.Items)
+        {
+            response.Tracks.Add(new Track
+            {
+                Name = track!.Name,
+                Id = track.Id,
+                Album = new Album
+                {
+                    Name = track.Album!.Name,
+                    Id = track.Album.Id
+                },
+                Artists = track.Artists.Select(artist => new Artist{ Id = artist!.Id, Name = artist!.Name }).ToList()
+            });
+        }
+
+        return response;
     }
 }
