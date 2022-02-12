@@ -4,8 +4,8 @@ public class Track
 {
     public string? Name { get; set; }
     public string? Id { get; set; }
-    public Album? Album { get; set; }
-    public List<Artist> Artists { get; set; } = new();
+    public string? Album { get; set; }
+    public string? Artist { get; set; }
     public string? ImageUrl { get; set; }
     public string? ExternalSpotifyUrl { get; set; }
 }

@@ -5,6 +5,7 @@ namespace SpotifyRecommendations.Application.Spotify.Queries.SearchQuery;
 
 public class SearchQuery : IRequest<SearchResult>
 {
+    public string QueryString { get; set; } = null!;
     public string Artist { get; init; } = null!;
     public string Album { get; init; } = null!;
     public string YearStart { get; init; } = null!;

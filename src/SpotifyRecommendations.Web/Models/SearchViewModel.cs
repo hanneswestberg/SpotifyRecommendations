@@ -3,8 +3,9 @@ using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery;
 
 namespace SpotifyRecommendations.Models;
 
-public class GetRecommendationsViewModel
+public class SearchViewModel
 {
-    public List<Track> RecommendedTracks { get; set; } = new();
+    public List<string> Genres { get; set; } = new();
     public SearchQuery SearchQuery { get; set; } = null!;
+    public List<Track> Tracks { get; set; } = new();
 }

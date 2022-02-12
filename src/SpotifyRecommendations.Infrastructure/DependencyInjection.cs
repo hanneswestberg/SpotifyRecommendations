@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddSingleton<IHttpClientFactory, HttpClientFactory>();
         
         services.AddSingleton<ISpotifyRepository, SpotifyRepository>();
+        services.AddSingleton<IUserPreferenceService, UserPreferenceService>();
         
         services.AddScoped<ISpotifyService, SpotifyService>();
         

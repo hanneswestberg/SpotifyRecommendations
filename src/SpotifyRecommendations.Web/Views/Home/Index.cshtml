@@ -1,35 +1,77 @@
 ﻿@using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery
-@model HomeViewModel
+@model SearchViewModel
 @{
     ViewData["Title"] = "Spotify Recommendations";
     
     var query = new SearchQuery();
 }
 
-<div class="text-center">
-    <h1 class="display-4" style="margin-bottom: 50px">Spotify Recommendations</h1>
-    
-    <form asp-controller="Home" asp-action="GetRecommendations" method="post" class="row top-50">
-        <div class="col-3">
-            Artist: <input asp-for="@query.Artist" class="form-control"/>
-            Album: <input asp-for="@query.Album" class="form-control"/>
-            From (Year): <input asp-for="@query.YearStart" class="form-control"/>
-            To (Year): <input asp-for="@query.YearEnd" class="form-control"/>
-            Genre: <input asp-for="@query.Genre" list="genresList" placeholder="Type here..." class="form-control"/>
-            <datalist id="genresList">
-                @foreach (var genre in Model.Genres)
-                {
-                    <option value="@genre"/>
-                }
-            </datalist>
-            
-            
-            Must be new: <input asp-for="@query.TagNew" type="checkbox" class="form-check-input"/>
-            Must be hipster: <input asp-for="@query.TagHipster" type="checkbox" class="form-check-input"/>
-        </div>
-        <div class="align-content-center">
-            <button type="submit" class="btn btn-success m-2">Get recommendations</button>
-        </div>
-    </form>
+<div class="text-center" style="margin-bottom: 50px">
+    <h1 class="display-4">Spotify Recommendations</h1>
+    <p>Proposes recommendation of tracks for your personal aquired taste</p>
 </div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <form asp-controller="Home" asp-action="Search" method="post">
+                Search: <input asp-for="@query.QueryString" class="form-control"/>
+                Artist: <input asp-for="@query.Artist" class="form-control"/>
+                Album: <input asp-for="@query.Album" class="form-control"/>
+                From (Year): <input asp-for="@query.YearStart" class="form-control"/>
+                To (Year): <input asp-for="@query.YearEnd" class="form-control"/>
+                Genre: <input asp-for="@query.Genre" list="genresList" placeholder="Type here..." class="form-control"/>
+                <datalist id="genresList">
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <option value="@genre"/>
+                    }
+                </datalist>
+                <div>
+                    Must be new: <input asp-for="@query.TagNew" type="checkbox" class="form-check-input"/>
+                    <br/>
+                    Must be hipster: <input asp-for="@query.TagHipster" type="checkbox" class="form-check-input"/>
+                </div>
+                <div class="align-content-center" style="margin-top: 20px">
+                    <button type="submit" class="btn" style="background-color: #1DB954; color: white">Search</button>
+                </div>
+            </form>
+            
+            @await Component.InvokeAsync("UserPreference")
+        </div>
+        <div class="col-9">
+            <div class="row">
+                @if (!Model.Tracks.Any())
+                {
+                    <p>Do a search...</p>
+                }
+                else
+                {
+                    @foreach (var track in @Model.Tracks)
+                    {
+                        <div class="col-4 p-1">
+                            <div class="card text-white mb-3" style="max-width: 18rem; margin-top: 30px; background-color: #191414">
+                                <div style="margin-left: 15px">
+                                    <div class="card-text">@track.Name</div>
+                                    <div class="card-text"><i>@track.Artist</i></div>
+                                </div>
+                                <div class="card-body">
+                                    <iframe style="float: right;" src="https://open.spotify.com/embed/track/@track.Id" width="80" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                    <form asp-controller="Home" asp-action="AddTrackToPreferenceList" method="post" class="position-absolute" style="left: 15px; bottom: 15px">
+                                        <input asp-for="@track.Id" type="hidden"/>
+                                        <input asp-for="@track.Name" type="hidden"/>
+                                        <input asp-for="@track.Artist" type="hidden"/>
+                                        <button type="submit" class="btn btn-outline-light">Add track</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
 

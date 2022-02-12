@@ -51,12 +51,8 @@ public class SpotifyService : ISpotifyService
             {
                 Name = track!.Name,
                 Id = track.Id,
-                Album = new Album
-                {
-                    Name = track.Album!.Name,
-                    Id = track.Album.Id
-                },
-                Artists = track.Artists.Select(artist => new Artist{ Id = artist!.Id, Name = artist!.Name }).ToList()
+                Album = track.Album!.Name,
+                Artist = string.Join(", ", track.Artists.Select(artist => artist!.Name))
             });
         }
 

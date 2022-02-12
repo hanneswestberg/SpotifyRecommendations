@@ -36,8 +36,8 @@ public class SearchResponseDto
 
     public class ExternalUrlDto
     {
-        [JsonPropertyName("spotify")]
-        public string Spotify { get; set; }
+        [JsonPropertyName("spotify")] 
+        public string? Spotify { get; set; } = null;
     }
 
     public class ArtistDto
