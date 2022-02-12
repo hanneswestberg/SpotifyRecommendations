@@ -1,5 +1,6 @@
 using SpotifyRecommendations.Application;
 using SpotifyRecommendations.Application.Spotify.Options;
+using SpotifyRecommendations.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.Configure<SpotifyOptions>(builder.Configuration.GetSection(name
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 
