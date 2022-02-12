@@ -29,6 +29,15 @@ public class SearchResponseDto
         
         [JsonPropertyName("artists")] 
         public IEnumerable<ArtistDto?> Artists { get; set; } = Array.Empty<ArtistDto>();
+        
+        [JsonPropertyName("external_urls")]
+        public ExternalUrlDto? ExternalUrls { get; set; }
+    }
+
+    public class ExternalUrlDto
+    {
+        [JsonPropertyName("spotify")]
+        public string Spotify { get; set; }
     }
 
     public class ArtistDto
@@ -47,6 +56,21 @@ public class SearchResponseDto
         
         [JsonPropertyName("name")] 
         public string? Name { get; set; } = null;
+        
+        [JsonPropertyName("images")]
+        public IEnumerable<ImageDto?> Images { get; set; } = Array.Empty<ImageDto>();
+        
+        public class ImageDto
+        {
+            [JsonPropertyName("url")]
+            public string? Url { get; set; }
+        
+            [JsonPropertyName("height")]
+            public int? Height { get; set; }
+        
+            [JsonPropertyName("width")]
+            public int? Width { get; set; }
+        }
     }
 }
 
