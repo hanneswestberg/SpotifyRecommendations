@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using SpotifyRecommendations.Application.Spotify.Interfaces;
 using SpotifyRecommendations.Application.Spotify.Models;
 
-namespace SpotifyRecommendations.Infrastructure.Spotify.Repositories;
+namespace SpotifyRecommendations.Infrastructure.Spotify.Services;
 
 public class UserPreferenceService : IUserPreferenceService
 {
