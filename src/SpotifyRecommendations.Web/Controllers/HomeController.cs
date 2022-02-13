@@ -1,12 +1,13 @@
 ﻿using System.Diagnostics;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SpotifyRecommendations.Application.Spotify.Interfaces;
+using SpotifyRecommendations.Application.Spotify.Commands.AddTrackToUserPreferenceCommand;
+using SpotifyRecommendations.Application.Spotify.Commands.RemoveTrackFromUserPreferenceCommand;
 using SpotifyRecommendations.Application.Spotify.Models;
 using SpotifyRecommendations.Application.Spotify.Queries.GetGenresQuery;
 using SpotifyRecommendations.Application.Spotify.Queries.GetRecommendationsQuery;
+using SpotifyRecommendations.Application.Spotify.Queries.GetUserPreferenceQuery;
 using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery;
-using SpotifyRecommendations.Infrastructure.Spotify.Helpers;
 using SpotifyRecommendations.Models;
 
 namespace SpotifyRecommendations.Controllers;
@@ -15,13 +16,11 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IMediator _mediator;
-    private readonly IUserPreferenceService _userPreferenceService;
 
-    public HomeController(ILogger<HomeController> logger, IMediator mediator, IUserPreferenceService userPreferenceService)
+    public HomeController(ILogger<HomeController> logger, IMediator mediator)
     {
         _logger = logger;
         _mediator = mediator;
-        _userPreferenceService = userPreferenceService;
     }
 
     public async Task<IActionResult> Index()
@@ -53,23 +52,23 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddTrackToPreferenceList([FromForm] Track track)
+    public async Task<IActionResult> AddTrackToPreferenceList([FromForm] AddTrackToUserPreferenceCommand command)
     {
-        _userPreferenceService.AddTrack(track);
+        _ = await _mediator.Send(command);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
-    public IActionResult RemoveTrackFromPreferenceList([FromForm] Track track)
+    public async Task<IActionResult> RemoveTrackFromPreferenceList([FromForm] RemoveTrackFromUserPreferenceCommand command)
     {
-        _userPreferenceService.RemoveTrack(track);
+        _ = await _mediator.Send(command);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     public async Task<IActionResult> GetRecommendations()
     {
-        var userPreferenceTracks = _userPreferenceService.GetTracks();
+        var userPreferenceTracks = await _mediator.Send(new GetUserPreferenceQuery());
         var response = await _mediator.Send(new GetRecommendationsQuery
         {
             TrackIds = userPreferenceTracks.Select(x => x.Id)
