@@ -15,7 +15,7 @@ public class SearchQuery : IRequest<SearchResult>
     public bool TagNew { get; init; } = false;
     public bool TagHipster { get; init; } = false;
 
-    public int Limit { get; init; } = 9;
+    public int Limit { get; init; } = 12;
     public int Offset { get; init; } = 0;
 }
 

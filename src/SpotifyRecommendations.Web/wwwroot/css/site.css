@@ -16,3 +16,14 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.card {
+  transition: transform .3s, box-shadow .2s;
+  border: 0px; 
+  background-color: #1DB954; 
+  background-position: center;
+}
+.card:hover {
+  box-shadow: 0 0 15px rgba(0,0,0);
+  transform: scale(1.04);
+}

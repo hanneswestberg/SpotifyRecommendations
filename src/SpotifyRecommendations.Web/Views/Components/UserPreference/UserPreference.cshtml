@@ -3,22 +3,31 @@
 
 @if (Model.Any())
 {
-    <div class="card text-white mb-3" style="margin-top: 30px; background-color: #1DB954">
+    <div class="card text-white mb-3" style="margin-top: 30px; background-color: #191414">
         <div class="card-header">Liked tracks</div>
         <div class="card-body">
             @foreach (var track in Model)
             {
-                <span>@track.Name - @track.Artist</span>
-                <form asp-controller="Home" asp-action="RemoveTrackFromPreferenceList" method="post">
-                    @{
-                        var command = new RemoveTrackFromUserPreferenceCommand();
-                    }
-                    <input asp-for="@command.Track.Id" value="@track.Id" type="hidden"/>
-                    <button type="submit" class="btn btn-close-white">Remove</button>
-                </form>
+                <div class="row">
+                    <div class="col-8">
+                        <span>@track.Name</span>
+                        <br/>
+                        <i>@track.Artist</i>
+                    </div>
+                    <div class="col-4">
+                        <form asp-controller="Home" asp-action="RemoveTrackFromPreferenceList" method="post">
+                            @{
+                                var command = new RemoveTrackFromUserPreferenceCommand();
+                            }
+                            <input asp-for="@command.Track.Id" value="@track.Id" type="hidden"/>
+                            <button type="submit" class="btn btn-close-white">Remove</button>
+                        </form>
+                    </div>
+                </div>
+                <hr/>
             }
             <form asp-controller="Home" asp-action="GetRecommendations" method="post">
-                <button type="submit" class="btn btn-dark" style="background-color: #1DB954; color: white">Get recommendations</button>
+                <button type="submit" class="btn btn-light" style="background-color: #1DB954; color: white">Get recommendations</button>
             </form>
         </div>
     </div>
