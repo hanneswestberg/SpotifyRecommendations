@@ -31,7 +31,7 @@ public class UserPreferenceService : IUserPreferenceService
     {
         var tracks = GetTracks().ToList();
         
-        if (tracks.Contains(track))
+        if (tracks.Contains(track) || tracks.Count >= 5)
             return;
         
         tracks.Add(track);
