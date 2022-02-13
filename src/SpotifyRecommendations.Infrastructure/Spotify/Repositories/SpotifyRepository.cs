@@ -15,15 +15,17 @@ public class SpotifyRepository : ISpotifyRepository
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IOptions<SpotifyOptions> _options;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
     private static readonly TimeSpan AccessTokenLifeTime = new(0, 45, 0);
     private DateTime _accessTokenTimeStamp = DateTime.MinValue;
 
-    public SpotifyRepository(IHttpClientFactory httpClientFactory, IOptions<SpotifyOptions> options)
+    public SpotifyRepository(IHttpClientFactory httpClientFactory, IOptions<SpotifyOptions> options, IDateTimeProvider dateTimeProvider)
     {
         _httpClientFactory = httpClientFactory;
         _options = options;
-        
+        _dateTimeProvider = dateTimeProvider;
+
         var authHttpClient = _httpClientFactory.GetClientByUri(new Uri(_options.Value.AuthBaseAddress!));
         var authKeyText = $"{_options.Value.ClientId}:{_options.Value.ClientSecret}";
         var authKeyBytes = Encoding.ASCII.GetBytes(authKeyText);
@@ -60,7 +62,7 @@ public class SpotifyRepository : ISpotifyRepository
         response.EnsureSuccessStatusCode();
         
         var accessToken = await response.Content.ReadFromJsonAsync<AuthorizationResponseDto>(cancellationToken: cancellationToken);
-        _accessTokenTimeStamp = DateTime.Now;
+        _accessTokenTimeStamp = _dateTimeProvider.Now();
 
         var requestHttpClient = _httpClientFactory.GetClientByUri(new Uri(_options.Value.BaseAddress!));
         
@@ -69,6 +71,6 @@ public class SpotifyRepository : ISpotifyRepository
 
     private bool AccessTokenIsValid()
     {
-        return DateTime.Now - _accessTokenTimeStamp < AccessTokenLifeTime;
+        return _dateTimeProvider.Now() - _accessTokenTimeStamp < AccessTokenLifeTime;
     }
 }
