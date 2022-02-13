@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Execution;
-using SpotifyRecommendations.Infrastructure.Factories;
+using SpotifyRecommendations.Infrastructure.Common.Factories;
 using Xunit;
 
 namespace SpotifyRecommendations.Tests.Unit.Factories;

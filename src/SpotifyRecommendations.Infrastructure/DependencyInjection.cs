@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SpotifyRecommendations.Application.Common.Interfaces;
 using SpotifyRecommendations.Application.Spotify.Interfaces;
-using SpotifyRecommendations.Infrastructure.Factories;
+using SpotifyRecommendations.Infrastructure.Common.Factories;
 using SpotifyRecommendations.Infrastructure.Spotify.Repositories;
 using SpotifyRecommendations.Infrastructure.Spotify.Services;
 

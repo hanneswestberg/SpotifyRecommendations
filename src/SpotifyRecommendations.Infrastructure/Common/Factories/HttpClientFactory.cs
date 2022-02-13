@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using SpotifyRecommendations.Application.Common.Interfaces;
 
-namespace SpotifyRecommendations.Infrastructure.Factories;
+namespace SpotifyRecommendations.Infrastructure.Common.Factories;
 
 public class HttpClientFactory : IHttpClientFactory
 {
