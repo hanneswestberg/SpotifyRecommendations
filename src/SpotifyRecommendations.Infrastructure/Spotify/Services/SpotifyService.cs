@@ -51,7 +51,12 @@ public class SpotifyService : ISpotifyService
                 Name = track.Name,
                 Id = track.Id,
                 Album = track.Album!.Name,
-                Artist = string.Join(", ", track.Artists.Select(artist => artist!.Name))
+                Artist = string.Join(", ", track.Artists.Select(artist => artist!.Name)),
+                ImageUrl = track.Album?.Images?
+                    .OrderByDescending(x => x.Height)
+                    .FirstOrDefault()
+                    .Url ?? null,
+                ExternalSpotifyUrl = ""
             });
         }
         
