@@ -27,3 +27,25 @@ body {
   box-shadow: 0 0 15px rgba(0,0,0);
   transform: scale(1.04);
 }
+
+.navbar {
+  background-color: #1DB954;
+}
+
+.searchForm {
+  transition: box-shadow .2s;
+}
+
+.searchForm:hover {
+  box-shadow: 0 0 15px rgba(0,0,0);
+}
+
+input[type=range]::-webkit-slider-thumb {
+  background: #1DB954;
+}
+input[type=range]::-moz-range-thumb {
+  background: #1DB954;
+}
+input[type=range]::-ms-thumb {
+  background: #1DB954;
+}

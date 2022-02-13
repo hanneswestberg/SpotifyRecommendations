@@ -1,5 +1,7 @@
 ﻿@using SpotifyRecommendations.Application.Spotify.Queries.SearchQuery
 @using SpotifyRecommendations.Application.Spotify.Commands.AddTrackToUserPreferenceCommand
+@using Newtonsoft.Json
+@using SpotifyRecommendations.Application.Spotify.Commands.RemoveTrackFromUserPreferenceCommand
 @model SearchViewModel
 @{
     ViewData["Title"] = "Spotify Recommendations";
@@ -8,14 +10,14 @@
 }
 
 <div class="text-center" style="margin-bottom: 50px">
-    <h1 class="display-4">Spotify Recommendations</h1>
-    <p>Proposes recommendation of tracks for your personal aquired taste</p>
+    <h1 style="margin-top: 20px">How to use:</h1>
+    <p>Search for 1-5 tracks of your musical taste and add them to your list of liked songs. Then press the 'Get recommendations' button to generate new songs similar to your taste.</p>
 </div>
 
 <div class="container">
     <div class="row">
         <div class="col-3">
-            <form asp-controller="Home" asp-action="Search" method="post" class="border border-light p-4" style="border-radius: 25px">
+            <form asp-controller="Home" asp-action="Search" method="post" class="searchForm border border-light p-4" style="border-radius: 25px">
                 Search: <input asp-for="@query.QueryString" class="form-control"/>
                 Artist: <input asp-for="@query.Artist" class="form-control"/>
                 Album: <input asp-for="@query.Album" class="form-control"/>
@@ -34,18 +36,48 @@
                     Must be hipster: <input asp-for="@query.TagHipster" type="checkbox" class="form-check-input"/>
                 </div>
                 <div class="align-content-center" style="margin-top: 20px">
-                    <button type="submit" class="btn" style="background-color: #1DB954; color: white">Search</button>
+                    <button type="submit" class="btn btn-outline-light">Search</button>
                 </div>
             </form>
-            @await Component.InvokeAsync("UserPreference")
+            @if (Model.LikedTracks.Any())
+            {
+                <div class="card text-white mb-3" style="margin-top: 30px; background-color: #191414">
+                    <div class="card-header">Liked tracks</div>
+                    <div class="card-body">
+                        @foreach (var track in Model.LikedTracks)
+                        {
+                            <div class="row">
+                                <div class="col-8">
+                                    <span>@track.Name</span>
+                                    <br/>
+                                    <i>@track.Artist</i>
+                                </div>
+                                <div class="col-4">
+                                    <form asp-controller="Home" asp-action="RemoveTrackFromPreferenceList" method="post">
+                                        @{
+                                            var command = new RemoveTrackFromUserPreferenceCommand();
+                                            var tracksData = JsonConvert.SerializeObject(Model.Tracks);
+                                            var searchQuery = JsonConvert.SerializeObject(Model.SearchQuery);
+                                        }
+                                        <input name="trackData" value="@tracksData" type="hidden"/>
+                                        <input name="searchQuery" value="@searchQuery" type="hidden"/>
+                                        <input asp-for="@command.Track.Id" value="@track.Id" type="hidden"/>
+                                        <button type="submit" class="btn btn-close-white">Remove</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <hr/>
+                        }
+                        <form asp-controller="Home" asp-action="GetRecommendations" method="post">
+                            <button type="submit" class="btn" style="background-color: #1DB954; color: white">Get recommendations</button>
+                        </form>
+                    </div>
+                </div>
+            }
         </div>
         <div class="col-9">
             <div class="row">
-                @if (!Model.Tracks.Any())
-                {
-                    <p class="display-6 text-center">Do a search...</p>
-                }
-                else
+                @if (Model.Tracks.Any())
                 {
                     @foreach (var track in @Model.Tracks)
                     {
@@ -57,15 +89,29 @@
                                 </div>
                                 <div class="card-body">
                                     <iframe style="float: right;" src="https://open.spotify.com/embed/track/@track.Id" width="80" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                                    <form asp-controller="Home" asp-action="AddTrackToPreferenceList" method="post" class="position-absolute" style="left: 15px; bottom: 15px">
-                                        @{
-                                            var command = new AddTrackToUserPreferenceCommand();
-                                        }
-                                        <input asp-for="@command.Track.Id" value="@track.Id" type="hidden"/>
-                                        <input asp-for="@command.Track.Name" value="@track.Name" type="hidden"/>
-                                        <input asp-for="@command.Track.Artist" value="@track.Artist" type="hidden"/>
-                                        <button type="submit" class="btn btn-outline-light">Like track</button>
-                                    </form>
+                                    
+                                    @if (Model.LikedTracks.Any(x => x.Id == track.Id))
+                                    {
+                                        <div class="position-absolute" style="left: 15px; bottom: 15px">
+                                            <button type="submit" disabled class="btn" style="background-color: #1DB954; color: white">Liked</button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <form asp-controller="Home" asp-action="AddTrackToPreferenceList" method="post" class="position-absolute" style="left: 15px; bottom: 15px">
+                                            @{
+                                                var command = new AddTrackToUserPreferenceCommand();
+                                                var tracksData = JsonConvert.SerializeObject(Model.Tracks);
+                                                var searchQuery = JsonConvert.SerializeObject(Model.SearchQuery);
+                                            }
+                                            <input name="trackData" value="@tracksData" type="hidden"/>
+                                            <input name="searchQuery" value="@searchQuery" type="hidden"/>
+                                            <input asp-for="@command.Track.Id" value="@track.Id" type="hidden"/>
+                                            <input asp-for="@command.Track.Name" value="@track.Name" type="hidden"/>
+                                            <input asp-for="@command.Track.Artist" value="@track.Artist" type="hidden"/>
+                                            <button type="submit" class="btn btn-outline-light">Like track</button>
+                                        </form>
+                                    }
                                 </div>
                             </div>
                         </div>

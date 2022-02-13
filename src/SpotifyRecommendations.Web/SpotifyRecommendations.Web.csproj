@@ -17,4 +17,8 @@
       <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Components\UserPreference\UserPreference.cshtml" />
+    </ItemGroup>
+
 </Project>

@@ -8,4 +8,5 @@ public class SearchViewModel
     public List<string> Genres { get; set; } = new();
     public SearchQuery SearchQuery { get; set; } = null!;
     public List<Track> Tracks { get; set; } = new();
+    public List<Track> LikedTracks { get; set; } = new();
 }

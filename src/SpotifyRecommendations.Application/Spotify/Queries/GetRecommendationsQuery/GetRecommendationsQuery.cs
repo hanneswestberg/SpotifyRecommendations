@@ -6,6 +6,10 @@ namespace SpotifyRecommendations.Application.Spotify.Queries.GetRecommendationsQ
 public class GetRecommendationsQuery : IRequest<RecommendationsResponse>
 {
     public IEnumerable<string?> TrackIds { get; set; } = Array.Empty<string>();
+    public int? TargetDanceability { get; set; } = null;
+    public int? TargetAcousticness { get; set; } = null;
+    public int? TargetEnergy { get; set; } = null;
+    public int? TargetPopularity { get; set; } = null;
 }
 
 public class GetRecommendationsQueryHandler : IRequestHandler<GetRecommendationsQuery, RecommendationsResponse>

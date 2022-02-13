@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SpotifyRecommendations.Application.Spotify.Commands.AddTrackToUserPreferenceCommand;
 using SpotifyRecommendations.Application.Spotify.Commands.RemoveTrackFromUserPreferenceCommand;
+using SpotifyRecommendations.Application.Spotify.Models;
 using SpotifyRecommendations.Application.Spotify.Queries.GetGenresQuery;
 using SpotifyRecommendations.Application.Spotify.Queries.GetRecommendationsQuery;
 using SpotifyRecommendations.Application.Spotify.Queries.GetUserPreferenceQuery;
@@ -25,10 +27,12 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var genreResponse = await _mediator.Send(new GetGenresQuery());
-        
+        var likedTracks = await _mediator.Send(new GetUserPreferenceQuery());
+
         var viewModel = new SearchViewModel
         {
-            Genres = genreResponse.Genres
+            Genres = genreResponse.Genres,
+            LikedTracks = likedTracks.ToList()
         };
         
         return View(viewModel);
@@ -38,30 +42,56 @@ public class HomeController : Controller
     public async Task<IActionResult> Search([FromForm] SearchQuery query)
     {
         var genreResponse = await _mediator.Send(new GetGenresQuery());
+        var likedTracks = await _mediator.Send(new GetUserPreferenceQuery());
         var searchResponse = await _mediator.Send(query);
 
         var viewModel = new SearchViewModel
         {
             Genres = genreResponse.Genres,
             Tracks = searchResponse.Tracks,
-            SearchQuery = query
+            SearchQuery = query,
+            LikedTracks = likedTracks.ToList()
         };
         
         return View("~/Views/Home/Index.cshtml", viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddTrackToPreferenceList([FromForm] AddTrackToUserPreferenceCommand command)
+    public async Task<IActionResult> AddTrackToPreferenceList([FromForm] AddTrackToUserPreferenceCommand command, string trackData, string searchQuery)
     {
         await _mediator.Send(command);
-        return RedirectToAction(nameof(Index));
+        
+        var genreResponse = await _mediator.Send(new GetGenresQuery());
+        var likedTracks = await _mediator.Send(new GetUserPreferenceQuery());
+
+        var viewModel = new SearchViewModel
+        {
+            Genres = genreResponse.Genres,
+            Tracks = JsonConvert.DeserializeObject<List<Track>>(trackData),
+            SearchQuery = JsonConvert.DeserializeObject<SearchQuery>(searchQuery),
+            LikedTracks = likedTracks.ToList()
+        };
+        
+        return View("~/Views/Home/Index.cshtml", viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> RemoveTrackFromPreferenceList([FromForm] RemoveTrackFromUserPreferenceCommand command)
+    public async Task<IActionResult> RemoveTrackFromPreferenceList([FromForm] RemoveTrackFromUserPreferenceCommand command, string trackData, string searchQuery)
     {
         await _mediator.Send(command);
-        return RedirectToAction(nameof(Index));
+                
+        var genreResponse = await _mediator.Send(new GetGenresQuery());
+        var likedTracks = await _mediator.Send(new GetUserPreferenceQuery());
+
+        var viewModel = new SearchViewModel
+        {
+            Genres = genreResponse.Genres,
+            Tracks = JsonConvert.DeserializeObject<List<Track>>(trackData),
+            SearchQuery = JsonConvert.DeserializeObject<SearchQuery>(searchQuery),
+            LikedTracks = likedTracks.ToList()
+        };
+        
+        return View("~/Views/Home/Index.cshtml", viewModel);
     }
 
     [HttpPost]
@@ -76,9 +106,27 @@ public class HomeController : Controller
         var viewModel = new GetRecommendationsViewModel
         {
             RecommendedTracks = response.Tracks.ToList(),
+            TotalTracks = response.TotalTracks
         };
         
         return View(viewModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RefineRecommendations([FromForm] GetRecommendationsQuery query)
+    {
+        var userPreferenceTracks = await _mediator.Send(new GetUserPreferenceQuery());
+        query.TrackIds = userPreferenceTracks.Select(x => x.Id);
+        
+        var response = await _mediator.Send(query);
+
+        var viewModel = new GetRecommendationsViewModel
+        {
+            RecommendedTracks = response.Tracks.ToList(),
+            TotalTracks = response.TotalTracks
+        };
+        
+        return View("~/Views/Home/GetRecommendations.cshtml", viewModel);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

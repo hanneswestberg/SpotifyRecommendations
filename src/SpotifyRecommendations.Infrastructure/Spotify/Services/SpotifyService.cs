@@ -36,12 +36,15 @@ public class SpotifyService : ISpotifyService
 
     public async Task<RecommendationsResponse> GetRecommendations(GetRecommendationsQuery getRecommendationsQuery, CancellationToken cancellationToken = default)
     {
+        var recommendationsQueryString = QueryBuilder.BuildRecommendationsQuery(getRecommendationsQuery);
         var responseDto = await _spotifyRepository.Get<RecommendationsResponseDto>(
-            $"{_options.Value.Endpoints!.GetRecommendations}?market=sv&seed_tracks={string.Join(",", getRecommendationsQuery.TrackIds)}", cancellationToken);
+            $"{_options.Value.Endpoints!.GetRecommendations}?market=sv{recommendationsQueryString}", cancellationToken);
 
         var response = new RecommendationsResponse();
         if (responseDto?.Tracks is not { })
             return response;
+
+        response.TotalTracks = responseDto.Seeds.Sum(x => x.InitialPoolSize);
         
         // Todo: Move mapping of objects to a mapper
         foreach (var track in responseDto.Tracks)
@@ -55,8 +58,7 @@ public class SpotifyService : ISpotifyService
                 ImageUrl = track.Album?.Images?
                     .OrderByDescending(x => x.Height)
                     .FirstOrDefault()
-                    .Url ?? null,
-                ExternalSpotifyUrl = ""
+                    .Url ?? null
             });
         }
         
@@ -65,7 +67,7 @@ public class SpotifyService : ISpotifyService
 
     public async Task<SearchResult> Search(SearchQuery searchQuery, CancellationToken cancellationToken = default)
     {
-        var searchQueryString = SearchQueryBuilder.Build(searchQuery);
+        var searchQueryString = QueryBuilder.BuildSearchQuery(searchQuery);
         var responseDto = await _spotifyRepository
             .Get<SearchResponseDto>($"{_options.Value.Endpoints!.SearchRequest}?type=track&market=SV&include_external=audio&q={searchQueryString}&limit={searchQuery.Limit}&offset={searchQuery.Offset}", 
                 cancellationToken);

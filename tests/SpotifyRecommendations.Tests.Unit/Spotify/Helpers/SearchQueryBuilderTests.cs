@@ -13,7 +13,7 @@ public class SearchQueryBuilderTests
     public void Build_GivenSearchQueryModel_ShouldReturnStringContainingExpected(SearchQuery searchQuery, string[] expected)
     {
         // Act
-        var result = SearchQueryBuilder.Build(searchQuery);
+        var result = QueryBuilder.BuildSearchQuery(searchQuery);
 
         // Assert
         result.Should().ContainAll(expected);

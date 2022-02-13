@@ -5,4 +5,5 @@ namespace SpotifyRecommendations.Application.Spotify.Queries.GetRecommendationsQ
 public class RecommendationsResponse
 {
     public List<Track> Tracks { get; set; } = new();
+    public int TotalTracks { get; set; }
 }

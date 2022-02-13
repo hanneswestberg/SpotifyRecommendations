@@ -1,13 +1,38 @@
-﻿@model GetRecommendationsViewModel
+﻿@using SpotifyRecommendations.Application.Spotify.Queries.GetRecommendationsQuery
+@model GetRecommendationsViewModel
 @{
     ViewData["Title"] = "Spotify Recommendations";
 }
-<div class="text-center">
-    <h1 class="display-4" style="margin-bottom: 50px">Spotify Recommendations</h1>
-    <p>Based on your liked tracks, these might peek your interest.</p>
+<div class="position-absolute">
+    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index"> Go back</a>
+</div>
+<div class="text-center" style="margin-bottom: 50px">
+    <h1 class="display-4" >Spotify Recommendations</h1>
+    <br/>
+    <span><i>Based on your liked tracks, these might peek your interest.</i></span>
 </div>
 
-<div class="container">
+<form class="row" asp-controller="Home" asp-action="RefineRecommendations" method="post">
+    @{
+        var query = new GetRecommendationsQuery();
+    }
+    <div class="col-3">
+        Danceability: <input asp-for="@query.TargetDanceability" type="range" class="form-range" min="0" max="10" step="1"/>
+    </div>
+    <div class="col-3">
+        Acousticness: <input asp-for="@query.TargetAcousticness" type="range" class="form-range" min="0" max="10" step="1"/>
+    </div>
+    <div class="col-3">
+        Energy: <input asp-for="@query.TargetEnergy" type="range" class="form-range" min="0" max="10" step="1"/>
+    </div>
+    <div class="col-3">
+        Popularity: <input asp-for="@query.TargetPopularity" type="range" class="form-range" min="0" max="10" step="1"/>
+    </div>
+    <button type="submit" class="btn mx-auto" style="background-color: #1DB954; color: white; width: 300px; display: block; margin-top: 20px">Refine recommendations</button>
+</form>
+
+<div class="container" style="margin-top: 20px;">
+    <p style="margin-bottom: 30px">Viewing @Model.RecommendedTracks.Count of @Model.TotalTracks tracks</p>
     <div class="row">
         @foreach (var track in Model.RecommendedTracks)
         {
@@ -19,7 +44,7 @@
                     </div>
                     <div class="card-body">
                         <iframe style="float: right;" src="https://open.spotify.com/embed/track/@track.Id" width="80" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                        
+
                         <div class="position-absolute" style="left: 15px; bottom: 15px">
                             <a href="spotify:track:@track.Id" class="btn btn-outline-light">Open in Spotify</a>
                         </div>
