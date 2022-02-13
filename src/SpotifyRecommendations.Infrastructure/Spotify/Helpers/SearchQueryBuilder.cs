@@ -8,6 +8,9 @@ public static class SearchQueryBuilder
     public static string Build(SearchQuery searchQuery)
     {
         var searchQueryString = new StringBuilder();
+
+        if (!string.IsNullOrWhiteSpace(searchQuery.QueryString))
+            searchQueryString.Append($"{searchQuery.QueryString}");
         
         if (!string.IsNullOrWhiteSpace(searchQuery.Artist))
             searchQueryString.Append($"+artist:{searchQuery.Artist}");
