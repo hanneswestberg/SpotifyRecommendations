@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SpotifyRecommendations.Application.Spotify.Commands.AddTrackToUserPreferenceCommand;
 using SpotifyRecommendations.Application.Spotify.Commands.RemoveTrackFromUserPreferenceCommand;
-using SpotifyRecommendations.Application.Spotify.Models;
 using SpotifyRecommendations.Application.Spotify.Queries.GetGenresQuery;
 using SpotifyRecommendations.Application.Spotify.Queries.GetRecommendationsQuery;
 using SpotifyRecommendations.Application.Spotify.Queries.GetUserPreferenceQuery;
@@ -54,14 +53,14 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> AddTrackToPreferenceList([FromForm] AddTrackToUserPreferenceCommand command)
     {
-        _ = await _mediator.Send(command);
+        await _mediator.Send(command);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     public async Task<IActionResult> RemoveTrackFromPreferenceList([FromForm] RemoveTrackFromUserPreferenceCommand command)
     {
-        _ = await _mediator.Send(command);
+        await _mediator.Send(command);
         return RedirectToAction(nameof(Index));
     }
 
