@@ -56,8 +56,8 @@ public class SpotifyService : ISpotifyService
                 Album = track.Album!.Name,
                 Artist = string.Join(", ", track.Artists.Select(artist => artist!.Name)),
                 ImageUrl = track.Album?.Images?
-                    .OrderByDescending(x => x.Height)
-                    .FirstOrDefault()
+                    .OrderByDescending(x => x!.Height)
+                    .FirstOrDefault()?
                     .Url ?? null
             });
         }
@@ -68,6 +68,11 @@ public class SpotifyService : ISpotifyService
     public async Task<SearchResult> Search(SearchQuery searchQuery, CancellationToken cancellationToken = default)
     {
         var searchQueryString = QueryBuilder.BuildSearchQuery(searchQuery);
+        
+        // TODO: Move input validation to a middleware
+        if (string.IsNullOrWhiteSpace(searchQueryString))
+            return new SearchResult();
+        
         var responseDto = await _spotifyRepository
             .Get<SearchResponseDto>($"{_options.Value.Endpoints!.SearchRequest}?type=track&market=SV&include_external=audio&q={searchQueryString}&limit={searchQuery.Limit}&offset={searchQuery.Offset}", 
                 cancellationToken);
@@ -86,8 +91,8 @@ public class SpotifyService : ISpotifyService
                 Album = track.Album!.Name,
                 Artist = string.Join(", ", track.Artists.Select(artist => artist!.Name)),
                 ImageUrl = track.Album?.Images?
-                    .OrderByDescending(x => x.Height)
-                    .FirstOrDefault()
+                    .OrderByDescending(x => x!.Height)
+                    .FirstOrDefault()?
                     .Url ?? null
             });
         }
